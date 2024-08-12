@@ -1,4 +1,7 @@
+// src/app/dashboard/_components/file-browser.tsx
+
 "use client";
+
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -74,12 +77,18 @@ export function FileBrowser({
   );
   const isLoading = files === undefined;
 
+  // Add logic to generate file URL
+  const generateFileUrl = (file: Doc<"files">): string => {
+    return `/files/${file._id}`; // Replace with your actual logic for generating file URLs
+  };
+
   const modifiedFiles =
     files?.map((file) => ({
       ...file,
       isFavorited: (favorites ?? []).some(
         (favorite) => favorite.fileId === file._id
       ),
+      url: generateFileUrl(file), // Adding URL to each file
     })) ?? [];
 
   return (
@@ -88,7 +97,6 @@ export function FileBrowser({
         <h1 className="text-4xl font-bold">{title}</h1>
 
         <SearchBar query={query} setQuery={setQuery} />
-
         <UploadButton />
       </div>
 

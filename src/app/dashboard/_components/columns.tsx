@@ -30,6 +30,7 @@ export const columns: ColumnDef<
     accessorKey: "name",
     header: "Name",
   },
+
   {
     accessorKey: "type",
     header: "Type",
