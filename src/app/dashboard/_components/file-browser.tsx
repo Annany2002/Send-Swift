@@ -1,16 +1,15 @@
-// src/app/dashboard/_components/file-browser.tsx
-
 "use client";
 
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { UploadButton } from "./upload-button";
-import { FileCard } from "./file-card";
+import { Doc } from "../../../../convex/_generated/dataModel";
 import Image from "next/image";
 import { GridIcon, Loader2, RowsIcon } from "lucide-react";
+import { UploadButton } from "./upload-button";
+import { FileCard } from "./file-card";
 import { SearchBar } from "./search-bar";
-import { useState } from "react";
 import { DataTable } from "./file-table";
 import { columns } from "./columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Doc } from "../../../../convex/_generated/dataModel";
 import { Label } from "@/components/ui/label";
 
 function Placeholder() {
@@ -48,48 +46,37 @@ export function FileBrowser({
   favoritesOnly?: boolean;
   deletedOnly?: boolean;
 }) {
-  const organization = useOrganization();
-  const user = useUser();
   const [query, setQuery] = useState("");
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
+  const favorites = useQuery(api.files.getAllFavorites, "skip");
 
-  let orgId: string | undefined = undefined;
-  if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
-  }
+  const files = useQuery(api.files.getFiles, {
+    query: query,
+    favorites: favoritesOnly,
+    deletedOnly: deletedOnly,
+  });
 
-  const favorites = useQuery(
-    api.files.getAllFavorites,
-    orgId ? { orgId } : "skip"
-  );
-
-  const files = useQuery(
-    api.files.getFiles,
-    orgId
-      ? {
-          orgId,
-          type: type === "all" ? undefined : type,
-          query,
-          favorites: favoritesOnly,
-          deletedOnly,
-        }
-      : "skip"
-  );
   const isLoading = files === undefined;
 
+  //https://brilliant-wolverine-731.convex.cloud/api/storage/a0e703c9-5baf-4d94-bfbc-d439e5ed2d85
+
   // Add logic to generate file URL
-  const generateFileUrl = (file: Doc<"files">): string => {
-    return `/files/${file._id}`; // Replace with your actual logic for generating file URLs
+  const generateFileUrl = (
+    file: Doc<"files"> & { url: string | null }
+  ): string | null => {
+    return file.url;
   };
 
   const modifiedFiles =
-    files?.map((file) => ({
-      ...file,
-      isFavorited: (favorites ?? []).some(
-        (favorite) => favorite.fileId === file._id
-      ),
-      url: generateFileUrl(file), // Adding URL to each file
-    })) ?? [];
+    (files &&
+      files?.map((file) => ({
+        ...file,
+        isFavorited: (favorites ?? []).some(
+          (favorite) => favorite.fileId === file._id
+        ),
+        url: generateFileUrl(file), // Adding URL to each file
+      }))) ??
+    [];
 
   return (
     <div>
@@ -141,7 +128,7 @@ export function FileBrowser({
         )}
 
         <TabsContent value="grid">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {modifiedFiles?.map((file) => {
               return <FileCard key={file._id} file={file} />;
             })}

@@ -9,7 +9,6 @@ import {
 import {
   FileIcon,
   MoreVertical,
-  StarHalf,
   StarIcon,
   TrashIcon,
   UndoIcon,
@@ -83,12 +82,19 @@ export function FileCardActions({
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              if (!file.url) return;
-              window.open(file.url, "_blank");
+              if (!file.url) {
+                return;
+              }
+              navigator.clipboard.writeText(file.url);
+              toast({
+                variant: "success",
+                title: "Copied",
+                description: "Your file url is copied",
+              });
             }}
             className="flex gap-1 items-center cursor-pointer"
           >
-            <FileIcon className="w-4 h-4" /> Download
+            <FileIcon className="w-4 h-4" /> Copy URL
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -100,12 +106,12 @@ export function FileCardActions({
             className="flex gap-1 items-center cursor-pointer"
           >
             {isFavorited ? (
-              <div className="flex gap-1 items-center">
+              <div className="flex gap-[6px] items-center">
                 <StarIcon className="w-4 h-4" /> Unfavorite
               </div>
             ) : (
-              <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Favorite
+              <div className="flex gap-[6px] items-center">
+                <StarIcon className="w-4 h-4" /> Favorite
               </div>
             )}
           </DropdownMenuItem>

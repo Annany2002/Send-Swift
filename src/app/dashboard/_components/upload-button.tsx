@@ -1,7 +1,8 @@
 "use client";
 
+import { api } from "../../../../convex/_generated/api";
+import { useMutation } from "convex/react";
 import { Button } from "@/components/ui/button";
-import { useOrganization, useUser } from "@clerk/nextjs";
 import {
   Form,
   FormControl,
@@ -11,8 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
 import {
   Dialog,
   DialogContent,
@@ -40,8 +39,7 @@ const formSchema = z.object({
 
 export function UploadButton() {
   const { toast } = useToast();
-  const organization = useOrganization();
-  const user = useUser();
+
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -55,8 +53,6 @@ export function UploadButton() {
   const fileRef = form.register("file");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!orgId) return;
-
     const postUrl = await generateUploadUrl();
 
     const fileType = values.file[0].type;
@@ -78,7 +74,6 @@ export function UploadButton() {
       await createFile({
         name: values.title,
         fileId: storageId,
-        orgId,
         type: types[fileType],
       });
 
@@ -100,11 +95,6 @@ export function UploadButton() {
     }
   }
 
-  let orgId: string | undefined = undefined;
-  if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
-  }
-
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
   const createFile = useMutation(api.files.createFile);
@@ -124,7 +114,7 @@ export function UploadButton() {
         <DialogHeader>
           <DialogTitle className="mb-8">Upload your File Here</DialogTitle>
           <DialogDescription>
-            This file will be accessible by anyone in your organization
+            This file will be accessible by anyone
           </DialogDescription>
         </DialogHeader>
 
