@@ -1,10 +1,13 @@
-**SendSwift: A Next.js File Storage Application**
+# SendSwift: A Next.js File Storage and Sharing Application
 
-**Overview**
+![image](https://github.com/user-attachments/assets/ea94cbbf-73e9-4a12-b4df-5adfab4a6c49)
 
-SendSwift is a feature-rich file storage application built with Next.js, TypeScript, Convex, Clerk, and Shadcn. It offers a seamless user experience for file management, collaboration, and security.
 
-**Key Features**
+### Overview
+
+SendSwift is a feature-rich file storage and sharing application built with Next.js, TypeScript, Convex, Clerk, and Shadcn. It offers a seamless user experience for file management, collaboration, and security.
+
+### Key Features
 
 * **File Upload and Management:**
   * Easily upload files to your cloud storage.
@@ -23,13 +26,13 @@ SendSwift is a feature-rich file storage application built with Next.js, TypeScr
   * Utilize Clerk for seamless user authentication and authorization.
   * Protect sensitive data with robust security measures.
 
-**Technology Stack**
+### Technology Stack
 
 * **Frontend:** Next.js, TypeScript, React, Shadcn
 * **Backend:** Convex
 * **Authentication and Authorization:** Clerk
 
-**Getting Started**
+### Getting Started
 
 1. **Clone the Repository:**
    ```bash
@@ -61,7 +64,7 @@ SendSwift is a feature-rich file storage application built with Next.js, TypeScr
    npm run dev
    ```
 
-**Contributing**
+### Contributing
 
 We welcome contributions to SendSwift. Please follow these guidelines:
 
@@ -71,7 +74,7 @@ We welcome contributions to SendSwift. Please follow these guidelines:
 4. Push your branch to your fork.
 5. Create a pull request to the main branch.
 
-**License**
+### License
 
 This project is licensed under the MIT License.
 
